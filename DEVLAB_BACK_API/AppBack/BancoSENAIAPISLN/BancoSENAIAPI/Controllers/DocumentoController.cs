@@ -11,5 +11,7 @@ namespace BancoSENAIAPI.Controllers
         private static List<Models.documentoMETADADO> _documentosMetadados = new List<Models.documentoMETADADO>();
 
         private static int _nextId = 1;
+        [HttpPost("upload/{CodCliente}")]
+        public async Task<ActionResult> AnexarArquivo(int CodCliente, IFormFile arquivo);
     }
 }
