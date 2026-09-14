@@ -23,7 +23,7 @@ namespace BancoSENAIAPI.Controllers
         [HttpPost]
         public IActionResult Cadastrar([FromBody] Agencia novaAgencia)
         {
-            
+
             if (_agencias.Any(a => a.NumeroAgencia == novaAgencia.NumeroAgencia))
                 return BadRequest(new { message = "Este número de agência já existe." });
 
@@ -67,5 +67,7 @@ namespace BancoSENAIAPI.Controllers
             _agencias.Remove(agencia);
             return Ok(new { message = "Agência excluída com sucesso." }); // Status 200 [6]
         }
+
+        
     }
 }
