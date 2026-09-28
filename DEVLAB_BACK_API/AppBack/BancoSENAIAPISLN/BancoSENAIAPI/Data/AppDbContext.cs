@@ -1,4 +1,5 @@
-﻿namespace BancoSENAIAPI.Models;
+﻿namespace BancoSENAIAPI.Data;
+using BancoSENAIAPI.Models;
 using Microsoft.EntityFrameworkCore;
 public class AppDbContext : DbContext
 {

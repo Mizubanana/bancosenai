@@ -1,6 +1,7 @@
 using BancoSENAIAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using BancoSENAIAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
