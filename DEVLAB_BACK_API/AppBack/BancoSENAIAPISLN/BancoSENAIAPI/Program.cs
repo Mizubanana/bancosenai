@@ -1,11 +1,17 @@
+using BancoSENAIAPI.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using BancoSENAIAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(7, 0, 0))));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -20,9 +26,9 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermitirTudo",
-        policy => policy.AllowAnyOrigin() // Permite a 'origin null' do seu arquivo local
-                        .AllowAnyMethod() // Permite os verbos GET, POST, PUT, DELETE [2]
-                        .AllowAnyHeader()); // Permite o envio de JSON no corpo da mensagem [3]
+        policy => policy.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
 });
 
 var app = builder.Build();
@@ -34,7 +40,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// REMOVIDO: app.UseHttpsRedirection(); -> Evita o redirecionamento automático para HTTPS
 
 app.UseCors("PermitirTudo");
 
