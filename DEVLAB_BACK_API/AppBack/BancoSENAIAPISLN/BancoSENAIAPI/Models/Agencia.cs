@@ -2,9 +2,9 @@
 {
     public class Agencia
     {
-        public int NumeroAgencia { get; set; } 
+        public int Numeroagencia { get; set; } 
         public string Cidade { get; set; }
-        public string SiglaEstado { get; set; }
+        public string siglaestado { get; set; }
 
     }
 }

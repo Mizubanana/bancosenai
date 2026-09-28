@@ -9,9 +9,9 @@ namespace BancoSENAIAPI.Controllers
     {
         private static List<Agencia> _agencias = new List<Agencia>
         {
-            new Agencia { NumeroAgencia = 1001, Cidade = "Aracaju", SiglaEstado = "SE" },
-            new Agencia { NumeroAgencia = 2002, Cidade = "São Paulo", SiglaEstado = "SP" },
-            new Agencia { NumeroAgencia = 3003, Cidade = "Salvador", SiglaEstado = "BA" }
+            new Agencia { Numeroagencia = 1001, Cidade = "Aracaju", siglaestado = "SE" },
+            new Agencia { Numeroagencia = 2002, Cidade = "São Paulo", siglaestado = "SP" },
+            new Agencia { Numeroagencia = 3003, Cidade = "Salvador", siglaestado = "BA" }
         };
 
         [HttpGet]
@@ -24,7 +24,7 @@ namespace BancoSENAIAPI.Controllers
         public IActionResult Cadastrar([FromBody] Agencia novaAgencia)
         {
             
-            if (_agencias.Any(a => a.NumeroAgencia == novaAgencia.NumeroAgencia))
+            if (_agencias.Any(a => a.Numeroagencia == novaAgencia.Numeroagencia))
                 return BadRequest(new { message = "Este número de agência já existe." });
 
             _agencias.Add(novaAgencia);
@@ -35,7 +35,7 @@ namespace BancoSENAIAPI.Controllers
         [HttpGet("{codigo}")]
         public IActionResult ConsultarPorCodigo(int codigo)
         {
-            var agencia = _agencias.FirstOrDefault(a => a.NumeroAgencia == codigo);
+            var agencia = _agencias.FirstOrDefault(a => a.Numeroagencia == codigo);
 
             if (agencia == null)
                 return NotFound(new { message = "Agência não encontrada." }); // Status 404 [6, 7]
@@ -46,12 +46,12 @@ namespace BancoSENAIAPI.Controllers
         [HttpPut("{codigo}")]
         public IActionResult Alterar(int codigo, [FromBody] Agencia agenciaAtualizada)
         {
-            var agenciaExistente = _agencias.FirstOrDefault(a => a.NumeroAgencia == codigo);
+            var agenciaExistente = _agencias.FirstOrDefault(a => a.Numeroagencia == codigo);
 
             if (agenciaExistente == null) return NotFound();
 
             agenciaExistente.Cidade = agenciaAtualizada.Cidade;
-            agenciaExistente.SiglaEstado = agenciaAtualizada.SiglaEstado;
+            agenciaExistente.siglaestado = agenciaAtualizada.siglaestado;
 
             // Retorna Status 204 No Content para atualizações bem-sucedidas [6, 9]
             return NoContent();
@@ -60,7 +60,7 @@ namespace BancoSENAIAPI.Controllers
         [HttpDelete("{codigo}")]
         public IActionResult Excluir(int codigo)
         {
-            var agencia = _agencias.FirstOrDefault(a => a.NumeroAgencia == codigo);
+            var agencia = _agencias.FirstOrDefault(a => a.Numeroagencia == codigo);
 
             if (agencia == null) return NotFound();
 

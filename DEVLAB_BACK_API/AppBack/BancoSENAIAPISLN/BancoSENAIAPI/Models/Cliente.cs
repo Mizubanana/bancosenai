@@ -5,17 +5,17 @@ namespace BancoSENAIAPI.Models
     public class Cliente
     {
         [Key]
-        public int CodigoCliente { get; set; }
+        public int Codigo { get; set; }
 
         [Required(ErrorMessage = "O nome do cliente é obrigatório.")]
-        public string NomeCliente { get; set; } = string.Empty;
+        public string Nome { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "O CPF é obrigatório.")]
         public string CPF { get; set; } = string.Empty;
 
-        public int NumeroAgencia { get; set; } = 10;
+        public int numeroagencia { get; set; } = 10;
 
-        public decimal SaldoTotal { get; set; } = 0.0m;
+        public decimal Saldo { get; set; } = 0.0m;
 
         public DateTime? DataNascimento { get; set; }
         public string? Sexo { get; set; }

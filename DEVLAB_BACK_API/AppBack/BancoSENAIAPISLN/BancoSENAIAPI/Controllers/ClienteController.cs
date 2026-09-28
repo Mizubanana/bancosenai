@@ -19,33 +19,33 @@ namespace BancoSENAIAPI.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Cliente novoCliente)
         {
-            if (string.IsNullOrWhiteSpace(novoCliente.NomeCliente) || string.IsNullOrWhiteSpace(novoCliente.CPF))
+            if (string.IsNullOrWhiteSpace(novoCliente.Nome) || string.IsNullOrWhiteSpace(novoCliente.CPF))
             {
                 return BadRequest("Nome e CPF são obrigatórios.");
             }
 
-            novoCliente.CodigoCliente = _proximoId++;
-            if (novoCliente.NumeroAgencia == 0) novoCliente.NumeroAgencia = 10;
+            novoCliente.Codigo = _proximoId++;
+            if (novoCliente.numeroagencia == 0) novoCliente.numeroagencia = 10;
 
             _clientes.Add(novoCliente);
-            return CreatedAtAction(nameof(Get), new { id = novoCliente.CodigoCliente }, novoCliente);
+            return CreatedAtAction(nameof(Get), new { id = novoCliente.Codigo }, novoCliente);
         }
 
         [HttpPut("{codigoCliente}")]
         public IActionResult Put(int codigoCliente, [FromBody] Cliente clienteAtualizado)
         {
-            var clienteExistente = _clientes.FirstOrDefault(c => c.CodigoCliente == codigoCliente);
+            var clienteExistente = _clientes.FirstOrDefault(c => c.Codigo == codigoCliente);
             if (clienteExistente == null)
             {
                 return NotFound("Cliente não encontrado.");
             }
 
-            if (string.IsNullOrWhiteSpace(clienteAtualizado.NomeCliente) || string.IsNullOrWhiteSpace(clienteAtualizado.CPF))
+            if (string.IsNullOrWhiteSpace(clienteAtualizado.Nome) || string.IsNullOrWhiteSpace(clienteAtualizado.CPF))
             {
                 return BadRequest("Nome e CPF são obrigatórios.");
             }
 
-            clienteExistente.NomeCliente = clienteAtualizado.NomeCliente;
+            clienteExistente.Nome = clienteAtualizado.Nome;
             clienteExistente.CPF = clienteAtualizado.CPF;
             clienteExistente.DataNascimento = clienteAtualizado.DataNascimento;
             clienteExistente.Sexo = clienteAtualizado.Sexo;

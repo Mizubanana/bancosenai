@@ -1,6 +1,6 @@
 ﻿namespace BancoSENAIAPI.Models
 {
-    public class DocumentoMetadado
+    public class documentosmetadados
     {
 
         public int Id { get; set; }
