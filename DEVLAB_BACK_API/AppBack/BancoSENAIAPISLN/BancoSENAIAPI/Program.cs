@@ -1,17 +1,47 @@
-using BancoSENAIAPI.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
 using BancoSENAIAPI.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using BancoSENAIAPI.Services;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddScoped<TokenService>();
+
+var jwtSection = builder.Configuration.GetSection("Jwt");
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSection["Issuer"],
+            ValidAudience = jwtSection["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection["Key"]))
+        };
+    });
+
+builder.Services.AddAuthentication();
+
 builder.Services.AddControllers();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(7, 0, 0))));
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(7, 0, 0)))
+);
 
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -19,16 +49,37 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "Banco SENAI - Sistema Financeiro",
         Version = "v1",
-        Description = "API Gestão Financeira e Integração Clientes."
+        Description = "API Gest?o Financeira e Integra??o Clientes."
+    });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Informe apenas o token JWT"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer"}
+            },
+            Array.Empty<string>()
+        }
     });
 });
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermitirTudo",
-        policy => policy.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
+        policy => policy.AllowAnyOrigin() // Permite a 'origin null' do seu arquivo local
+                        .AllowAnyMethod() // Permite os verbos GET, POST, PUT, DELETE [2]
+                        .AllowAnyHeader()); // Permite o envio de JSON no corpo da mensagem [3]
 });
 
 var app = builder.Build();
@@ -40,7 +91,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// REMOVIDO: app.UseHttpsRedirection(); -> Evita o redirecionamento automático para HTTPS
+app.UseHttpsRedirection();
 
 app.UseCors("PermitirTudo");
 
